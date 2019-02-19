@@ -1,0 +1,8 @@
+{
+  "http_directory": "http",
+  "headless": "false",
+  "cpus": "2",
+  "memory": "2048",
+  "disk_size": "10240",
+  "arch": "64"
+}

@@ -1,0 +1,52 @@
+{
+  "builders": [
+    {
+      "type": "qemu",
+      "accelerator": "kvm",
+      "guest_os_type": "OpenSUSE_64",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "1a322de7c215da96fdbad4c247d218eb79073c5620a332a759c0291b44746fbc",
+      "iso_checksum_type": "sha256",
+      "boot_command": [
+        "<esc><enter><wait>",
+        "linux biosdevname=0 net.ifnames=0 netsetup=dhcp netdevice=eth0 install=cd:/<wait>",
+        " lang=en_US autoyast={{ user `host` }}/{{user `autoinst_cfg`}}<wait>",
+        " textmode=1<wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "{{ user `boot_wait` }}",
+      "communicator": "{{user `communicator`}}",
+      "disk_cache": "writeback",
+      "disk_compression": false,
+      "disk_discard": "ignore",
+      "disk_size": "10240",
+      "format": "qcow2",
+      "headless": true,
+      "qemuargs": [
+        [ "-m", "{{ user `memory` }}" ],
+        [ "-smp", "cpus={{ user `cpus`}}"],
+        [ "-nographic", "" ],
+        [ "-display", "none" ]
+      ],
+      "net_device": "e1000",
+      "skip_compaction": true,
+      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_password`}}",
+      "box_basename": "opensuse42_3",
+      "name": "opensuse42_3",
+      "template": "opensuse42_3-x86_64"
+    }
+  ],
+  "variables": {
+    "autoinst_cfg": "opensuse/42/3/autoinst.xml",
+    "cpus": "2",
+    "boot_wait": "10s",
+    "communicator": "ssh",
+    "host": "http://ns1.tolharadys.net",
+    "iso_url": "{{ user `host` }}/ISOs/openSUSE-Leap-42.3-DVD-x86_64.iso",
+    "iso_checksum": "1a322de7c215da96fdbad4c247d218eb79073c5620a332a759c0291b44746fbc",
+    "memory": "2048",
+    "ssh_username": "root"
+  }
+}
