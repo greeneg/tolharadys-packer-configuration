@@ -1,22 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE profile>
 <profile xmlns="http://www.suse.com/1.0/yast2ns" xmlns:config="http://www.suse.com/1.0/configns">
-<!--
-  <add-on>
-    <add_on_products config:type="list">
-      <listentry>
-        <media_url><![CDATA[https://download.opensuse.org/distribution/leap/42.3/repo/oss/]]></media_url>
-        <product>openSUSE 42.3 OSS</product>
-        <alias>repo-oss</alias>
-      </listentry>
-      <listentry>
-        <media_url><![CDATA[https://download.opensuse.org/update/leap/42.3/oss/]]></media_url>
-        <product>openSUSE 42.3 OSS Updates</product>
-        <alias>repo-oss-updates</alias>
-      </listentry>
-    </add_on_products>
-  </add-on>
--->
   <bootloader>
     <global>
       <activate>true</activate>
@@ -522,7 +506,7 @@
       </password_settings>
       <shell>/bin/bash</shell>
       <uid>0</uid>
-      <user_password>$6$5D.rUo7BJWpC$DCYwHdoLI3NW23U7P60c29Qmu.o5X6TMylu3AyIYjSLpU/7R07mlgpkYoPfMbnb6smW2u8OiJXcX1QGxYt5RQ.</user_password>
+      <user_password><%= @root_passwd_hash %></user_password>
       <username>root</username>
     </user>
   </users>

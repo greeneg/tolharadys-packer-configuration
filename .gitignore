@@ -3,3 +3,11 @@ packer_cache/
 
 # For built boxes
 *.box
+
+# don't check in secrets
+secrets.json
+
+# this is the rendered variables file that is generated from the secrets.json 
+# and the variables.json.erb. This file contains secrets in the rendered form
+# so don't check it in
+variables.json
