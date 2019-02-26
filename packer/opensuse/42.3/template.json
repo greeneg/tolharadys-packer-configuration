@@ -8,9 +8,10 @@
       "iso_checksum_type": "sha256",
       "boot_command": [
         "<esc><enter><wait>",
-        "linux biosdevname=0 net.ifnames=0 netsetup=dhcp netdevice=eth0 install=cd:/<wait>",
-        " lang=en_US autoyast=http://{{ user `host` }}/{{user `autoinst_cfg`}}<wait>",
-        " textmode=1<wait>",
+        "linux biosdevname=0 net.ifnames=0 netsetup=dhcp netdevice=eth0 <wait>",
+        "install=cd:/ lang=en_US <wait>",
+        "autoyast=http://{{ user `host` }}/{{user `autoinst_cfg`}}<wait>",
+        " textmode=1 vga=791<wait>",
         "<enter><wait>"
       ],
       "boot_wait": "{{ user `boot_wait` }}",
@@ -41,7 +42,14 @@
       "vnc_port_max": 5901
     }
   ],
-  "variables": {
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "../scripts/update_instance.sh"
+      ]
+    }
+  ],
     "autoinst_cfg": "",
     "cpus": "",
     "boot_wait": "",
