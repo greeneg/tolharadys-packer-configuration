@@ -37,3 +37,9 @@ while true; do
     * ) break ;;
   esac
 done
+
+echo "Selected options:"
+echo "module: $module"
+echo "os version: $os_version"
+echo "packer root: $packer_root"
+
