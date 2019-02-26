@@ -50,6 +50,7 @@
       ]
     }
   ],
+  "variables": {
     "autoinst_cfg": "",
     "cpus": "",
     "boot_wait": "",
