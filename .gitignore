@@ -11,3 +11,8 @@ secrets.json
 # and the variables.json.erb. This file contains secrets in the rendered form
 # so don't check it in
 variables.json
+
+# this is the rendered autoinst.xml file that is generated from the secrets.json
+# and the autoinst.xml.erb under the http section of the repository. This file
+# contains secrets in the rendered form so don't check it in
+autoinst.xml
