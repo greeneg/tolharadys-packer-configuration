@@ -39,7 +39,8 @@
       "name": "opensuse42_3",
       "vnc_bind_address": "127.0.0.1",
       "vnc_port_min": 5901,
-      "vnc_port_max": 5901
+      "vnc_port_max": 5901,
+      "vm_name": "{{user `file_name`}}"
     }
   ],
   "provisioners": [
@@ -55,6 +56,7 @@
     "cpus": "",
     "boot_wait": "",
     "communicator": "",
+    "file_name": "",
     "host": "",
     "iso_url": "",
     "iso_checksum": "",
