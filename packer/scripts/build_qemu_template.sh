@@ -2,7 +2,7 @@
 
 set -e
 
-VERSION='0.0.2'
+VERSION='0.0.3'
 
 # convenience variables
 true=1
@@ -99,15 +99,18 @@ function error_msg {
   local string=${1}
   local err_code=${2}
 
-  print "build_qemu_template: $string: Exiting\n" $bold $white_normal_foreground $red_normal_background
+  print "build_qemu_template: $string: Exiting\n" $bold \
+    $white_normal_foreground $red_normal_background
   exit $err_code
 }
 
 function about {
-  print "Packer QEMU Image Builder: v$VERSION\n" $bold $white_normal_foreground $normal_normal_background
+  print "Packer QEMU Image Builder: v$VERSION\n" $bold \
+    $white_normal_foreground $normal_normal_background
   echo -e "Copyright ${copyright}2019, YggdrasilSoft, LLC."
   echo "Licensed under the Apache License, version 2.0"
-  echo "See http://www.apache.org/licenses/LICENSE-2.0 for the text of the license"
+  echo -n "See http://www.apache.org/licenses/LICENSE-2.0 for the text of the "
+  echo "license"
 }
 
 function usage {
@@ -126,10 +129,13 @@ function usage {
 
   echo "Options:"
   echo "  -a|--age          The age in days before we build a new image"
-  echo "  -r|--packer-root  The directory that contains the packer module directories"
+  echo -n "  -r|--packer-root  The directory that contains the packer module "
+  echo "directories"
   echo "  -m|--module       The module to run via packer"
-  echo "  -o|--overwrite    Overwrite old version. Otherwise create new version and"
-  echo "                    create a 'latest' symbolic link to the directory containing"
+  echo -n "  -o|--overwrite    Overwrite old version. Otherwise create new "
+  echo "version and"
+  echo -n "                    create a 'latest' symbolic link to the directory"
+  echo " containing"
   echo "                    the build OS image"
   echo "  -v|--version      Print out the version of this tool"
   echo "  -h|--help         Print out this help text"
@@ -157,7 +163,8 @@ function validate_module {
   local os_version=${2}
 
   pushd $root 2>&1 >/dev/null
-    packer validate -var-file $os_version/variables.json $os_version/template.json
+    packer validate -var-file $os_version/variables.json \
+      $os_version/template.json
     packer inspect $os_version/template.json
   popd 2>&1 >/dev/null
 }
@@ -168,13 +175,48 @@ function build {
   local overwrite=${3}
 
   pushd $root 2>&1 >/dev/null
-    print "Current Working Directory: " $bold $white_normal_foreground $normal_normal_background
-    print "$(pwd)\n" $no_attributes $normal_normal_foreground $normal_normal_background
+    print "Current Working Directory: " $bold $white_normal_foreground \
+      $normal_normal_background
+    print "$(pwd)\n" $no_attributes $normal_normal_foreground \
+      $normal_normal_background
     if [[ "${overwrite}" == 1 ]]; then
-      packer build -force -var-file $os_version/variables.json $os_version/template.json
+      packer build -force -var-file $os_version/variables.json \
+        $os_version/template.json
     else
-      packer build -var-file $os_version/variables.json $os_version/template.json
+      packer build -var-file $os_version/variables.json \
+        $os_version/template.json
     fi
+  popd 2>&1 >/dev/null
+}
+
+function render_autoyast_file {
+  local root=${1}
+  local module=${2}
+  local os_version=${3}
+
+  local os_major=$(get_os_major_version $os_version)
+  local os_minor=$(get_os_minor_version $os_version)
+  
+  # verify that rendered autoinst.xml doesn't already exist
+  if [[ -f $root/http/$module/$os_major/$os_minor/autoinst.xml ]]; then
+    # didn't get cleaned up last run?
+    error_msg "rendered autoinst.xml file already exists" "$EEXIST"
+  else
+    print "${heavy_circled_rightway_arrow} Rendering autoinst.xml" $bold \
+      $white_normal_foreground $normal_normal_background
+  fi
+
+  pushd $root 2>&1 >/dev/null
+    if [[ ! -f $root/http/$module/$os_major/$os_minor/autoinst.xml.erb ]]; then
+      error_msg "template file not found" "$ENOENT"
+    fi
+    if [[ ! -f $root/$module/$os_version/secrets.json ]]; then
+      error_msg "secrets file not found" "$ENOENT"
+    fi
+    $root/scripts/process_autoyast.rb \
+      -t $root/http/$module/$os_major/$os_minor/autoinst.xml.erb \
+      -j $root/$module/$os_version/secrets.json \
+       > $root/http/$module/$os_major/$os_minor/autoinst.xml
   popd 2>&1 >/dev/null
 }
 
@@ -192,7 +234,8 @@ function render_vars_file {
     # complain and exit
     error_msg "rendered variables file already exists" "$EEXIST"
   else
-    print "${heavy_circled_rightway_arrow} Rendering Variables file" $bold $white_normal_foreground $normal_normal_background
+    print "${heavy_circled_rightway_arrow} Rendering Variables file" $bold \
+      $white_normal_foreground $normal_normal_background
   fi
 
   options=
@@ -218,24 +261,47 @@ function render_vars_file {
     if [[ ! -f $module/$os_version/version.json ]]; then
       error_msg "version file not found" "$ENOENT"
     fi
+    if [[ ! -f $module/$os_version/metadata.json ]]; then
+      error_msg "metadata file not found" "$ENOENT"
+    fi
     scripts/process_variables.rb $options \
       -t $module/$os_version/variables.json.erb \
-      -j $module/$os_version/secrets.json \
+      -s $module/$os_version/secrets.json \
       -f $module/$os_version/version.json \
+      -j $module/$os_version/metadata.json \
        > $module/$os_version/variables.json
   popd 2>&1 >/dev/null
 }
 
 function cleanup {
   local root=${1}
-  local os_version=${2}
+  local module=${2}
+  local os_version=${3}
+  
+  local os_major=$(get_os_major_version $os_version)
+  local os_minor=$(get_os_minor_version $os_version)
 
-  if [[ -f $root/$os_version/variables.json ]]; then
-    print "Cleaning packer root..." $bold $white_normal_foreground $normal_normal_background
-    rm $root/$os_version/variables.json
+  if [[ -f $root/$module/$os_version/variables.json ]]; then
+    print "Cleaning packer root..." $bold $white_normal_foreground \
+      $normal_normal_background
+    rm $root/$module/$os_version/variables.json
+    rm $root/http/$module/$os_major/$os_minor/autoinst.xml
   else
     error_msg "File not found: rendered file missing" "$ENOENT"
   fi
+}
+
+function get_os_major_version {
+  local os_version=${1}
+
+  # assuming that OS' use a semver like version....
+  echo $os_version | cut -f 1 -d '.'
+}
+
+function get_os_minor_version {
+  local os_version=${1}
+
+  echo $os_version | cut -f 2 -d '.'
 }
 
 # process our command line args
@@ -278,22 +344,32 @@ done
 
 parse_args
 
-print "Starting Packer QEMU Image Builder: v$VERSION\n\n" $no_attributes $white_normal_foreground $normal_normal_background
-print "${heavy_circled_rightway_arrow} Selected options:\n" $bold $white_normal_foreground $normal_normal_background
-print "${rightway_arrow} module: " $bold $cyan_normal_foreground $normal_normal_background
-print "${module}\n" $no_attributes $normal_normal_foreground $normal_normal_background
-print "${rightway_arrow} os version: " $bold $cyan_normal_foreground $normal_normal_background
-print "${os_version}\n" $no_attributes $normal_normal_foreground $normal_normal_background
-print "${rightway_arrow} packer root: " $bold $cyan_normal_foreground $normal_normal_background
-print "${packer_root}\n" $no_attributes $normal_normal_foreground $normal_normal_background
-print "${rightway_arrow} overwrite: " $bold $cyan_normal_foreground $normal_normal_background
+print "Starting Packer QEMU Image Builder: v$VERSION\n\n" $no_attributes \
+  $white_normal_foreground $normal_normal_background
+print "${heavy_circled_rightway_arrow} Selected options:\n" $bold \
+  $white_normal_foreground $normal_normal_background
+print "${rightway_arrow} module: " $bold $cyan_normal_foreground \
+  $normal_normal_background
+print "${module}\n" $no_attributes $normal_normal_foreground \
+  $normal_normal_background
+print "${rightway_arrow} os version: " $bold $cyan_normal_foreground \
+  $normal_normal_background
+print "${os_version}\n" $no_attributes $normal_normal_foreground \
+  $normal_normal_background
+print "${rightway_arrow} packer root: " $bold $cyan_normal_foreground \
+  $normal_normal_background
+print "${packer_root}\n" $no_attributes $normal_normal_foreground \
+  $normal_normal_background
+print "${rightway_arrow} overwrite: " $bold $cyan_normal_foreground \
+  $normal_normal_background
 if [[ "${overwrite}" == 1 ]]; then
   print "TRUE\n" $bold $green_normal_foreground $normal_normal_background
 else
   print "FALSE\n" $bold $red_normal_foreground $normal_normal_background
 fi
 
+render_autoyast_file "$packer_root" "$module" "$os_version"
 render_vars_file "$packer_root" "$module" "$os_version" $patch $minor $major
-validate_module "$packer_root/$module" "$os_version"
+validate_module "$packer_root" "$module" "$os_version"
 build "$packer_root/$module" "$os_version" "$overwrite"
 cleanup "$packer_root/$module" "$os_version"
