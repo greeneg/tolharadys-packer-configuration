@@ -4,6 +4,8 @@ require 'erb'
 require 'getoptlong'
 require 'json'
 
+is_error = false
+
 class XmlTemplate
   attr_accessor :root_passwd_hash
 
@@ -36,23 +38,8 @@ def read_template t_file
   return data
 end
 
-NAME    = 'process_autoyast'
-VERSION = '0.0.1'
-
-opts = GetoptLong.new(
-  [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
-  [ '--version', '-v', GetoptLong::NO_ARGUMENT ],
-  [ '--template', '-t', GetoptLong::REQUIRED_ARGUMENT ],
-  [ '--json', '-j', GetoptLong::REQUIRED_ARGUMENT ]
-)
-
-t_file = nil
-j_file = nil
-
-opts.each do |opt, arg|
-  case opt
-    when '--help'
-      puts <<-EOF
+def usage is_error
+  STDERR.puts <<-EOF
 process_variable_file.rb [OPTIONS]
 
   -h, --help
@@ -66,8 +53,34 @@ process_variable_file.rb [OPTIONS]
 
   -j, --json [JSON TEMPLATE FILE]
     The JSON file to read values from
-      EOF
-      exit
+  EOF
+  
+  if is_error == true
+    exit -1
+  else
+    exit 0
+  end
+end
+
+NAME    = 'process_autoyast'
+VERSION = '0.0.1'
+
+opts = GetoptLong.new(
+  [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
+  [ '--version', '-v', GetoptLong::NO_ARGUMENT ],
+  [ '--template', '-t', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--json', '-j', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--debug', GetoptLong::NO_ARGUMENT ]
+)
+
+t_file = nil
+j_file = nil
+with_debug = false
+
+opts.each do |opt, arg|
+  case opt
+    when '--help'
+      usage false
     when '--version'
       puts "#{NAME}: v#{VERSION}"
       exit
@@ -75,8 +88,20 @@ process_variable_file.rb [OPTIONS]
       t_file = arg
     when '--json'
       j_file = arg
+    when '--debug'
+      with_debug = true
   end
 end
+
+if t_file.nil?
+  usage true
+end
+if j_file.nil?
+  usage true
+end
+
+STDERR.puts "Template File: #{t_file}" if with_debug == true
+STDERR.puts "JSON File: #{j_file}" if with_debug == true
 
 j_obj = read_json j_file
 value = j_obj['root_passwd_hash']
