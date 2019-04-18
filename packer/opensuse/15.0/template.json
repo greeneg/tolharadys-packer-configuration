@@ -1,0 +1,68 @@
+{
+  "builders": [
+    {
+      "type": "qemu",
+      "accelerator": "kvm",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "sha256",
+      "boot_command": [
+        "<esc><enter><wait>",
+        "linux biosdevname=0 net.ifnames=0 netsetup=dhcp netdevice=eth0 <wait>",
+        "install=cd:/ lang=en_US <wait>",
+        "autoyast=http://{{ user `host` }}/{{user `autoinst_cfg`}}<wait>",
+        " textmode=1 vga=791<wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "{{ user `boot_wait` }}",
+      "communicator": "{{user `communicator`}}",
+      "disk_cache": "writeback",
+      "disk_compression": false,
+      "disk_discard": "ignore",
+      "disk_interface": "scsi",
+      "disk_size": "10240",
+      "format": "qcow2",
+      "headless": true,
+      "qemuargs": [
+        [ "-m", "{{ user `memory` }}" ],
+        [ "-smp", "cpus={{ user `cpus`}}"],
+        [ "-nographic", "" ],
+        [ "-display", "none" ]
+      ],
+      "net_device": "e1000",
+      "output_directory": "{{user `output_directory`}}",
+      "skip_compaction": true,
+      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_password`}}",
+      "ssh_wait_timeout": "30m",
+      "name": "opensuse42_3",
+      "vnc_bind_address": "127.0.0.1",
+      "vnc_port_min": 5901,
+      "vnc_port_max": 5901,
+      "vm_name": "{{user `file_name`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "../scripts/update_instance.sh"
+      ]
+    }
+  ],
+  "variables": {
+    "autoinst_cfg": "",
+    "cpus": "",
+    "boot_wait": "",
+    "communicator": "",
+    "file_name": "",
+    "host": "",
+    "iso_url": "",
+    "iso_checksum": "",
+    "memory": "",
+    "output_directory": "",
+    "ssh_username": "",
+    "ssh_password": ""
+  }
+}
