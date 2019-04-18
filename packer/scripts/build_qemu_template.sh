@@ -287,7 +287,7 @@ function cleanup {
   local root=${1}
   local module=${2}
   local os_version=${3}
-  
+
   local os_major=$(get_os_major_version $os_version)
   local os_minor=$(get_os_minor_version $os_version)
 
