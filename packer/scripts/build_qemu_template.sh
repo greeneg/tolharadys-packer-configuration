@@ -199,11 +199,11 @@ function render_autoyast_file {
 
   local os_major=$(get_os_major_version $os_version)
   local os_minor=$(get_os_minor_version $os_version)
-  
+
   # verify that rendered autoinst.xml doesn't already exist
   if [[ -f $root/http/$module/$os_major/$os_minor/autoinst.xml ]]; then
     if [[ "${overwrite}" == "$true" ]]; then
-      print "overwriting existing autoinst.xml file" $bold \
+      print "overwriting existing autoinst.xml file\n" $bold \
         $white_normal_foreground $normal_normal_background
       rm -v $root/http/$module/$os_major/$os_minor/autoinst.xml
     else
@@ -244,7 +244,7 @@ function render_vars_file {
     # complain and exit
     error_msg "rendered variables file already exists" "$EEXIST"
   else
-    print "${heavy_circled_rightway_arrow} Rendering Variables file" $bold \
+    print "${heavy_circled_rightway_arrow} Rendering Variables file\n" $bold \
       $white_normal_foreground $normal_normal_background
   fi
 
@@ -292,7 +292,7 @@ function cleanup {
   local os_minor=$(get_os_minor_version $os_version)
 
   if [[ -f $root/$module/$os_version/variables.json ]]; then
-    print "Cleaning packer root..." $bold $white_normal_foreground \
+    print "Cleaning packer root...\n" $bold $white_normal_foreground \
       $normal_normal_background
     rm $root/$module/$os_version/variables.json
     rm $root/http/$module/$os_major/$os_minor/autoinst.xml
