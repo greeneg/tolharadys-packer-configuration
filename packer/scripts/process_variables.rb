@@ -146,26 +146,26 @@ end
 
 # if any of these are nil, we didn't get appropriate flags to continue
 if t_file.nil?
-  puts "Template file must be defined!\n"
+  STDERR.puts "Template file must be defined!\n"
   usage true
 end
 if j_file.nil?
-  puts "Values file must be defined!\n"
+  STDERR.puts "Values file must be defined!\n"
   usage true
 end
 if s_file.nil?
-  puts "Secrets file must be defined!\n"
+  STDERR.puts "Secrets file must be defined!\n"
   usage true
 end
 if v_file.nil?
-  puts "Version file must be defined!\n"
+  STDERR.puts "Version file must be defined!\n"
   usage true
 end
 
 if p_ver != true
   if min_ver != true
     if maj_ver != true
-      puts "A version option must be specified!"
+      STDERR.puts "A version option must be specified!"
       usage true
     end
   end
