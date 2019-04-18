@@ -162,12 +162,15 @@ function parse_args {
 
 function validate_module {
   local root=${1}
-  local os_version=${2}
+  local module=${2}
+  local os_version=${3}
 
+  print "validating Terraform configuration\n" $bold $white_normal_foreground \
+    $normal_normal_background
   pushd $root 2>&1 >/dev/null
-    packer validate -var-file $os_version/variables.json \
-      $os_version/template.json
-    packer inspect $os_version/template.json
+    packer validate -var-file $root/$module/$os_version/variables.json \
+      $root/$module/$os_version/template.json
+    packer inspect $root/$module/$os_version/template.json
   popd 2>&1 >/dev/null
 }
 
