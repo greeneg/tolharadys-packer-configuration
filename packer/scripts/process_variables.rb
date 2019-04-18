@@ -165,6 +165,7 @@ end
 if p_ver != true
   if min_ver != true
     if maj_ver != true
+      puts "A version option must be specified!"
       usage true
     end
   end
