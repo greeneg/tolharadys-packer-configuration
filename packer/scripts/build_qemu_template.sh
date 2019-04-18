@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# kate: replace-tabs on; indent-width 2;
+
 set -e
 
 VERSION='0.0.3'
@@ -193,14 +195,21 @@ function render_autoyast_file {
   local root=${1}
   local module=${2}
   local os_version=${3}
+  local overwrite=${4}
 
   local os_major=$(get_os_major_version $os_version)
   local os_minor=$(get_os_minor_version $os_version)
   
   # verify that rendered autoinst.xml doesn't already exist
   if [[ -f $root/http/$module/$os_major/$os_minor/autoinst.xml ]]; then
-    # didn't get cleaned up last run?
-    error_msg "rendered autoinst.xml file already exists" "$EEXIST"
+    if [[ "${overwrite}" == "$true" ]]; then
+      print "overwriting existing autoinst.xml file" $bold \
+        $white_normal_foreground $normal_normal_background
+      rm -v $root/http/$module/$os_major/$os_minor/autoinst.xml
+    else
+      # didn't get cleaned up last run?
+      error_msg "rendered autoinst.xml file already exists" "$EEXIST"
+    fi
   else
     print "${heavy_circled_rightway_arrow} Rendering autoinst.xml" $bold \
       $white_normal_foreground $normal_normal_background
@@ -227,6 +236,7 @@ function render_vars_file {
   local patch=${4}
   local minor=${5}
   local major=${6}
+  local overwrite=${7}
 
   # verify that rendered template doesn't already exist
   if [[ -f $root/$module/$os_version/variables.json ]]; then
@@ -368,8 +378,9 @@ else
   print "FALSE\n" $bold $red_normal_foreground $normal_normal_background
 fi
 
-render_autoyast_file "$packer_root" "$module" "$os_version"
-render_vars_file "$packer_root" "$module" "$os_version" $patch $minor $major
+render_autoyast_file "$packer_root" "$module" "$os_version" "$overwrite"
+render_vars_file "$packer_root" "$module" "$os_version" $patch $minor $major \
+  $overwrite
 validate_module "$packer_root" "$module" "$os_version"
 build "$packer_root/$module" "$os_version" "$overwrite"
 cleanup "$packer_root/$module" "$os_version"
