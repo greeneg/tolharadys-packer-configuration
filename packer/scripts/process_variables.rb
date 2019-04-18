@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# kate: replace-tabs on; indent-width 2; indent-mode ruby;
+
 require 'erb'
 require 'getoptlong'
 require 'json'
@@ -59,9 +61,11 @@ process_variable_file.rb [OPTIONS]
   -t, --template [PACKER TEMPLATE FILE]
     The template file to process
 
-  -j, --json [JSON TEMPLATE FILE]
+  -j, --metadata-json [JSON FILE]
     The JSON file to read values from
 
+  -s, --secrets-json [JSON FILE]
+    
   -f, --version-file [IMAGE VERSION FILE]
     The last build's semver file for the image
 
@@ -83,7 +87,7 @@ process_variable_file.rb [OPTIONS]
 end
 
 NAME    = 'process_variables'
-VERSION = '0.0.2'
+VERSION = '0.0.3'
 
 opts = GetoptLong.new(
   [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
@@ -100,7 +104,7 @@ opts = GetoptLong.new(
 )
 
 # turn off stack tracing
-opts.quiet = true
+# opts.quiet = true
 
 t_file = nil
 j_file = nil
