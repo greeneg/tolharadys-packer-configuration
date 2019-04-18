@@ -211,7 +211,7 @@ function render_autoyast_file {
       error_msg "rendered autoinst.xml file already exists" "$EEXIST"
     fi
   else
-    print "${heavy_circled_rightway_arrow} Rendering autoinst.xml" $bold \
+    print "${heavy_circled_rightway_arrow} Rendering autoinst.xml\n" $bold \
       $white_normal_foreground $normal_normal_background
   fi
 
