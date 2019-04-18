@@ -47,7 +47,7 @@
     {
       "type": "shell",
       "scripts": [
-        "./scripts/update_instance.sh"
+        "../scripts/update_instance.sh"
       ]
     }
   ],

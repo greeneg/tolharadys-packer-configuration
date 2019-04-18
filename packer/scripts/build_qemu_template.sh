@@ -167,7 +167,7 @@ function validate_module {
 
   print "validating Terraform configuration\n" $bold $white_normal_foreground \
     $normal_normal_background
-  pushd $root 2>&1 >/dev/null
+  pushd $root/$module 2>&1 >/dev/null
     packer validate -var-file $root/$module/$os_version/variables.json \
       $root/$module/$os_version/template.json
     packer inspect $root/$module/$os_version/template.json
