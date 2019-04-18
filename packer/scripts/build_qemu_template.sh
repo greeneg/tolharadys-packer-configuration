@@ -239,10 +239,15 @@ function render_vars_file {
 
   # verify that rendered template doesn't already exist
   if [[ -f $root/$module/$os_version/variables.json ]]; then
-    # somehow this file was not cleaned out from previous runs
-    # complain and exit
-    error_msg "rendered variables file already exists" "$EEXIST"
-  else
+    if [[ "${overwrite}" == "$true" ]]; then
+      print "overwriting variables file\n" $bold $white_normal_foreground \
+        $normal_normal_background
+      rm -v $root/$module/$os_version/variables.json
+    else
+      # somehow this file was not cleaned out from previous runs
+      # complain and exit
+      error_msg "rendered variables file already exists" "$EEXIST"
+    fi
     print "${heavy_circled_rightway_arrow} Rendering Variables file\n" $bold \
       $white_normal_foreground $normal_normal_background
   fi
