@@ -23,6 +23,9 @@
       "disk_size": "10240",
       "format": "qcow2",
       "headless": true,
+      "http_directory": "http",
+      "http_port_min": "8423",
+      "http_port_max": "8423",
       "qemuargs": [
         [ "-m", "{{ user `memory` }}" ],
         [ "-smp", "cpus={{ user `cpus`}}"],
