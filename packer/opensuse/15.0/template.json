@@ -23,7 +23,7 @@
       "disk_size": "10240",
       "format": "qcow2",
       "headless": true,
-      "http_directory": "http",
+      "http_directory": "../http",
       "http_port_min": "8150",
       "http_port_max": "8150",
       "qemuargs": [
