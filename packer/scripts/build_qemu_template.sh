@@ -302,7 +302,7 @@ function cleanup {
     print "Cleaning packer root...\n" $bold $white_normal_foreground \
       $normal_normal_background
     rm $root/$module/$os_version/variables.json
-    rm $root/../http/$module/$os_major/$os_minor/autoinst.xml
+    rm $root/http/$module/$os_major/$os_minor/autoinst.xml
   else
     error_msg "File not found: rendered file missing" "$ENOENT"
   fi
