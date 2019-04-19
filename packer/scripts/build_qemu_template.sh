@@ -390,4 +390,4 @@ render_vars_file "$packer_root" "$module" "$os_version" $patch $minor $major \
   $overwrite
 validate_module "$packer_root" "$module" "$os_version"
 build "$packer_root/$module" "$os_version" "$overwrite"
-cleanup "$packer_root/$module" "$os_version"
+cleanup "$packer_root" "$module" "$os_version"
