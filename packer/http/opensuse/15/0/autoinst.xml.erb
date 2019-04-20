@@ -76,55 +76,14 @@
   </networking>
   <ntp-client>
     <ntp_policy>auto</ntp_policy>
-    <peers config:type="list">
-      <peer>
-        <address>/var/lib/ntp/drift/ntp.drift</address>
-        <comment/>
-        <options/>
-        <type>driftfile</type>
-      </peer>
-      <peer>
-        <address>/var/log/ntp</address>
-        <comment/>
-        <options/>
-        <type>logfile</type>
-      </peer>
-      <peer>
-        <address>/etc/ntp.keys</address>
-        <comment/>
-        <options/>
-        <type>keys</type>
-      </peer>
-      <peer>
-        <address>1</address>
-        <comment/>
-        <options/>
-        <type>trustedKey</type>
-      </peer>
-      <peer>
-        <address>1</address>
-        <comment/>
-        <options/>
-        <type>requestKey</type>
-      </peer>
-      <peer>
-        <address>1</address>
-        <comment/>
-        <options/>
-        <type>controlKey</type>
-      </peer>
-      <peer>
+    <ntp_servers config:type="list">
+      <ntp_server>
         <address>ns1.tolharadys.net</address>
-        <comment/>
-        <options>iburst</options>
-        <type>server</type>
-      </peer>
-    </peers>
-    <restricts config:type="list"/>
-    <start_at_boot config:type="boolean">true</start_at_boot>
-    <start_in_chroot config:type="boolean">false</start_in_chroot>
-    <sync_interval config:type="integer">5</sync_interval>
-    <synchronize_time config:type="boolean">false</synchronize_time>
+        <iburst config:type="boolean">true</iburst>
+        <offline config:type="boolean">true</offline>
+      </ntp_server>
+    </ntp_servers>
+    <ntp_sync>systemd</ntp_sync
   </ntp-client>
   <partitioning config:type="list">
     <drive>
@@ -221,7 +180,6 @@
     <install_recommended config:type="boolean">false</install_recommended>
     <instsource/>
     <packages config:type="list">
-      <package>SUSEConnect</package>
       <package>aaa_base</package>
       <package>adjtimex</package>
       <package>audit</package>
@@ -233,17 +191,17 @@
       <package>bzip2</package>
       <package>ca-certificates</package>
       <package>ca-certificates-mozilla</package>
+      <package>chrony</package>
       <package>coreutils</package>
       <package>cpio</package>
       <package>cracklib</package>
-      <package>cracklib-dict-small</package>
+      <package>cracklib-dict-full</package>
       <package>cron</package>
       <package>cronie</package>
       <package>curl</package>
       <package>dbus-1</package>
       <package>device-mapper</package>
       <package>diffutils</package>
-      <package>dirmngr</package>
       <package>dmidecode</package>
       <package>dracut</package>
       <package>e2fsprogs</package>
@@ -256,7 +214,6 @@
       <package>filesystem</package>
       <package>fillup</package>
       <package>findutils</package>
-      <package>fipscheck</package>
       <package>gawk</package>
       <package>gettext-runtime</package>
       <package>glibc</package>
@@ -290,7 +247,6 @@
       <package>krb5</package>
       <package>less</package>
       <package>libacl1</package>
-      <package>libadns1</package>
       <package>libaio1</package>
       <package>libapparmor1</package>
       <package>libasm1</package>
@@ -307,7 +263,7 @@
       <package>libcom_err2</package>
       <package>libcrack2</package>
       <package>libcroco-0_6-3</package>
-      <package>libcryptsetup4</package>
+      <package>libcryptsetup12</package>
       <package>libcurl4</package>
       <package>libdb-4_8</package>
       <package>libdbus-1-3</package>
@@ -315,12 +271,11 @@
       <package>libedit0</package>
       <package>libefivar1</package>
       <package>libelf1</package>
-      <package>libevent-2_0-5</package>
+      <package>libevent-2_1-8</package>
       <package>libexpat1</package>
       <package>libext2fs2</package>
       <package>libfdisk1</package>
-      <package>libffi4</package>
-      <package>libfipscheck1</package>
+      <package>libffi7</package>
       <package>libfreetype6</package>
       <package>libfuse2</package>
       <package>libgcc_s1</package>
@@ -331,23 +286,20 @@
       <package>libgpg-error0</package>
       <package>libgudev-1_0-0</package>
       <package>libhavege1</package>
-      <package>libicu52_1</package>
-      <package>libicu52_1-data</package>
+      <package>libicu60_2</package>
       <package>libidn11</package>
       <package>libkeyutils1</package>
       <package>libkmod2</package>
       <package>libksba8</package>
       <package>libldap-2_4-2</package>
-      <package>liblua5_1</package>
+      <package>liblua5_3-5</package>
       <package>liblzma5</package>
       <package>libmagic1</package>
       <package>libmnl0</package>
       <package>libmodman1</package>
       <package>libmount1</package>
-      <package>libncurses5</package>
       <package>libncurses6</package>
       <package>libnl-config</package>
-      <package>libnl1</package>
       <package>libnl3-200</package>
       <package>libopenssl1_0_0</package>
       <package>libp11-kit0</package>
@@ -356,12 +308,11 @@
       <package>libpcre1</package>
       <package>libpng16-16</package>
       <package>libpopt0</package>
-      <package>libprocps3</package>
+      <package>libprocps6</package>
       <package>libproxy1</package>
-      <package>libpth20</package>
       <package>libpython2_7-1_0</package>
-      <package>libqrencode3</package>
-      <package>libreadline6</package>
+      <package>libqrencode4</package>
+      <package>libreadline7</package>
       <package>libsasl2-3</package>
       <package>libseccomp2</package>
       <package>libselinux1</package>
@@ -391,7 +342,7 @@
       <package>libwrap0</package>
       <package>libx86emu1</package>
       <package>libxml2-2</package>
-      <package>libxtables10</package>
+      <package>libxtables12</package>
       <package>libz1</package>
       <package>libzio1</package>
       <package>libzypp</package>
@@ -404,7 +355,6 @@
       <package>nfs-client</package>
       <package>nfsidmap</package>
       <package>nscd</package>
-      <package>ntp</package>
       <package>openSUSE-release</package>
       <package>openslp</package>
       <package>openssh</package>
@@ -444,7 +394,6 @@
       <package>sysconfig-netconfig</package>
       <package>systemd</package>
       <package>systemd-bash-completion</package>
-      <package>systemd-logger</package>
       <package>systemd-presets-branding-openSUSE</package>
       <package>systemd-sysvinit</package>
       <package>sysvinit-tools</package>
@@ -467,7 +416,6 @@
       <package>wicked-service</package>
       <package>xfsprogs</package>
       <package>xz</package>
-      <package>yast2-firstboot</package>
       <package>yast2-online-update</package>
       <package>zypper</package>
       <package>zypper-lifecycle-plugin</package>
